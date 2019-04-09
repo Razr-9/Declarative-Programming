@@ -1,0 +1,2 @@
+sublists :: [a] -> [[a]]
+sublists [] = [[]]

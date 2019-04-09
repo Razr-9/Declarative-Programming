@@ -14,8 +14,9 @@
 --  exceptions and reports them as failures (a test intended to fail should
 --  catch the exception itself and report it as a success).
 
-module HaskellTest (TestCase(..), TestResult(..), expect, quality, 
-                    cumulative, test, testStdout, testVerbose) where
+module HaskellTest (TestCase(..), TestResult(..), expect, quality,
+                    cumulative, simpleSummary,
+                    test, testStdout, testVerbose) where
 
 import Prelude hiding (catch)
 import Text.Printf
@@ -57,19 +58,24 @@ data TestCase
     -- started to show what is being tested; a counter is also printed to
     -- distinguish among multiple individual tests with the same label.
     = Label String TestCase
-    -- | The value of the specified test case(s) is multiplied by the 
-    -- specified factor 
+    -- | The value of the specified test case(s) is multiplied by the
+    -- specified factor
     | Scaled Double TestCase
-    -- | The value of the specified test case is the quotient of the 
-    -- number of passed tests by the total number of tests.
+    -- | The value of the specified test case is the quotient of the
+    -- number of passed tests by the total number of tests.  This resets
+    -- the number of tests to 1, and scales the number of successful tests
+    -- to the success ratio.
     | Ratio TestCase
-    -- | The specified function is applied to the marks computed, the total 
-    -- number of successes and the total number of tests for the enclosed test(s).
+    -- | The specified function is applied to the marks computed, the total
+    -- number of successes and the total number of tests for the enclosed
+    -- test(s).
     | Computed (Double -> Double -> Double -> Double) TestCase
     -- | The specified number of seconds is given as a time limit for the
     -- execution of each individual test in the constituent test case.
+    -- This resets the number of tests to 1, and scales the number of
+    -- successful tests to the success ratio.
     | TimeLimit Double TestCase
-    -- | The total score for the included test(s), after any scaling, 
+    -- | The total score for the included test(s), after any scaling,
     -- is written to the specified file
     | ResultFile FilePath TestCase
     -- | An individual correctness test.  The specified test is
@@ -81,9 +87,9 @@ data TestCase
     -- | A collection of test cases.
     | NonLinearSuite (Double->Double->Double) Double [TestCase]
     -- | A collection of test cases with its own summary information.  The
-    -- first String will introduce the test collection, and supplied 
-    -- function will compute the summary statement from quality score 
-    -- and the maximum possible quality score (these are both simply 
+    -- first String will introduce the test collection, and supplied
+    -- function will compute the summary statement from quality score
+    -- and the maximum possible quality score (these are both simply
     -- counts for pass/fail tests).
     | Summarised String (Double -> Double -> Double -> String) TestCase
 
@@ -117,6 +123,19 @@ cumulative :: Show a => a -> (a -> Bool) -> (a -> Double) -> TestCase
 cumulative expr test assessment
     = Test (if not $ test expr then Fail "invalid output" ""
             else Cumulative (assessment expr) "" "")
+
+
+-- | A summary function for use in a Summarised test case to just prints a
+-- simple summary showing the number of points available and points earned.
+-- Give this a single string argument to show before the summary.
+simpleSummary :: String -> Double -> Double -> Double -> String
+simpleSummary prefix total _passed count =
+    prefix
+    ++ "Available points: "
+    ++ show count
+    ++ "\n"
+    ++ "Points earned: "
+    ++ show total
 
 
 -- | Run the provided test or suite, logging the output to the named file.
@@ -178,10 +197,10 @@ runTest fhandle l n limit verbose (Scaled sc tcase) = do
     return (n1,sc*t,sc*s,sc*c)
 runTest fhandle l n limit verbose (Ratio tcase) = do
     (n1,t,s,c) <- runTest fhandle l n limit verbose tcase
-    return (n1,t/c,1,1)
+    return (n1,t/c,s/c,1)
 runTest fhandle l n limit verbose (Computed f tcase) = do
     (n1,t,s,c) <- runTest fhandle l n limit verbose tcase
-    return (n1,f t s c,s,c)
+    return (n1,f t s c,s/c,1)
 runTest fhandle l n limit verbose (ResultFile file tcase) = do
     (n1,t,s,c) <- runTest fhandle l n limit verbose tcase
     writeFile file $ (show t) ++ "\n"
