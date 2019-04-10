@@ -60,14 +60,13 @@ nonRepeating x (y:ys) = if y `elem` x
                                 else nonRepeating (x ++ [y]) ys
 
 initialGuess :: ([Pitch], GameState)
-initialGuess = ( [ Pitch {note = 'A',octave = '2'}, Pitch {note = 'B',octave = '2'}, Pitch {note = 'G',octave = '3'} ], allOptions )
+initialGuess = ( [ Pitch {note = 'B',octave = '1'}, Pitch {note = 'D',octave = '3'}, Pitch {note = 'G',octave = '1'} ], allOptions )
     
 nextGuess :: ([Pitch], GameState) -> (Int, Int, Int) -> ([Pitch], GameState)
 nextGuess (lastGuess, gameState) lastFeedback = (newGuess, newGameState)
         where newGameState = remainingItem gameState lastGuess lastFeedback
               newGuess = newGameState !! index
               index = (length newGameState) `quot` 2
-                                              
 
 allOptions :: [[Pitch]]
 allOptions =  [ [x,y,z] | x <- combination, y <-combination , z <- combination , note x < note y || (note x == note y && octave x < octave y), note y < note z || (note y == note z && octave y < octave z) ]
