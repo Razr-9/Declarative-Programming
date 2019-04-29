@@ -3,19 +3,19 @@ correspond(X, [_|TX], Y, [_|TY]) :-
 correspond(X, TX, Y, TY).
 
 interleave(A,B) :- 
-interleave_(A,B), samelength(A).
+interleave_(A,B), length_same(A).
 
 interleave_([],[]).
 interleave_([[]|T],[]) :- 
-interleave(T,[]).
+interleave_(T,[]).
 interleave_([[H|T]|Ls], [H|L]) :- 
-append(Ls, [T], Lsn), interleave(Lsn, L).
+append(Ls, [T], Lsn), interleave_(Lsn, L).
 
-samelength([_|[]]).
-samelength([X1,X2|Xs]) :- 
+length_same([_|[]]).
+length_same([X1,X2|Xs]) :- 
 (
   same_length(X1,X2) -> 
-  samelength([X2|Xs])
+  length_same([X2|Xs])
 ).
 
 partial_eval(Expr0, Var, Val, Expr) :-
@@ -23,37 +23,37 @@ partial_eval(Expr0, Var, Val, Expr) :-
   replace(R1,Var,Val,R2),
   calculate(R2,Expr).
 
-terms_to_list(Exp0,R) :-
+terms_to_list(Terms,R) :-
     (
-      compound(Exp0) -> 
-      Exp0=..[H,F,S],
+      compound(Terms) -> 
+      Terms=..[H,F,S],
       terms_to_list(F,R1),
       terms_to_list(S,R2),
       append([H],[R1],Temp),
       append(Temp,[R2],R)
       ;
-      R = Exp0
+      R = Terms
     ).
 
-replace([H,F,S],Var,Val,R) :-
+replace([H,F,S],Var,Value,R) :-
     (
       is_list(F) -> 
-      replace(F,Var,Val,R1)
+      replace(F,Var,Value,R1)
       ;
       (
         atom(F), F = Var -> 
-        R1 = Val
+        R1 = Value
         ;
         R1 = F
       )
     ),
     (
       is_list(S) -> 
-      replace(S,Var,Val,R2)
+      replace(S,Var,Value,R2)
       ;
       (
         atom(S), S = Var -> 
-        R2 = Val
+        R2 = Value
         ;
         R2 = S
       )
