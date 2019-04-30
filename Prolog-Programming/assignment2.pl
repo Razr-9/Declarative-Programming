@@ -27,8 +27,18 @@ terms_to_list(Terms,R) :-
     (
       compound(Terms) -> 
       Terms=..[H,F,S],
-      terms_to_list(F,R1),
-      terms_to_list(S,R2),
+      (
+        compound(F) ->
+        terms_to_list(F,R1)
+        ;
+        R1 = F
+      ),
+      (
+        compound(S) ->
+        terms_to_list(S,R2)
+        ;
+        R2 = S
+      ),
       append([H],[R1],Temp),
       append(Temp,[R2],R)
       ;
