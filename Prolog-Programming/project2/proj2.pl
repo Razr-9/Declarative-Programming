@@ -131,7 +131,8 @@ to the rules.
 The element is a list of rows and columns, traversing the list 
 with recursions.
 
-sum/3 and #=/2 are from the library clpfd
+sum/3 and #=/2 are from the library clpfd, #=/2 is used here 
+to help the calculation to trackback to find solutions.
 */
 handle_puzzles([]).
 handle_puzzles([[Head|Solutions]|Others]) :-
@@ -146,7 +147,8 @@ product/2,
 The function to calculate the product with all elements of a list 
 and check if the product is equal to the second element.
 
-#=/2 is used here to subsuming both (is)/2 and (=:=)/2.
+#=/2 is used here to subsuming both (is)/2 and (=:=)/2, also make 
+the calculation be able to trackback.
 
 The first element is the list which can mean a row or a column, 
 the second one is a number means the heading or the product.
