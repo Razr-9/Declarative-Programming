@@ -115,8 +115,7 @@ are all distinct or not.
 all_distinct/1 is from library clpfd
 */
 all_valid([]).
-all_valid([H|T]) :-
-    H = [_|Tail],
+all_valid([[_|Tail]|T]) :-
     Tail ins 1..9,
     all_distinct(Tail),
     all_valid(T).
@@ -134,8 +133,7 @@ with recursions.
 sum/3 is from the library clpfd
 */
 handle_puzzles([]).
-handle_puzzles([Situation|Others]) :-
-    Situation = [Head|Solutions],
+handle_puzzles([[Head|Solutions]|Others]) :-
     (
         sum(Solutions,#=,Head);
         product(Solutions,Head)
