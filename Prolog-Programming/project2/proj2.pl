@@ -15,7 +15,7 @@ digit 1-9.
 
 The programs using a main function puzzle_solution/1 to solve the  
 problem which includes three main steps in total. Including check 
-if the matrix is valid, then handle the diagonales, check if the 
+if the matrix is valid, then handle the diagonales, find the 
 solutions conform to the rules and assign them.
 */
 
@@ -37,8 +37,10 @@ the diagonales then make sure they are all same.
 
 Finally, take all rows and columns to be solved together 
 and check them with the rules, including check if they are  
-valid and their sums or products are equal to the headings 
-and assign the values to each elements in Puzzles with label/1.
+valid and their sums or products are equal to the headings.
+#=/2 is used to help the calculation to trackback to find 
+the solutions. Then assign the values to each elements in 
+Puzzles with label/1.
 
 transpose/2, #=/2 and label/1 are from library clpfd
 */
