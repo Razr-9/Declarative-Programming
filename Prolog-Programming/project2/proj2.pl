@@ -51,7 +51,6 @@ puzzle_solution(Puzzles) :-
     diagonales(Solutions, Diagonales),
     Diagonales ins 1..9,
     all_same(Diagonales),
-    Puzzles=[_|TailPuzzles],
     Columns=[_|TailColumns],
     append(TailPuzzles,TailColumns,AllSituations),
     all_valid(AllSituations),
