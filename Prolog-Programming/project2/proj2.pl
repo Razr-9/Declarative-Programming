@@ -41,21 +41,21 @@ valid and their sums or products are equal to the headings
 and assign the values to each elements in Puzzles.
 */
 puzzle_solution(Puzzles) :-
-    transpose(Puzzles,Columns),
+    transpose(Puzzles, Columns),
     length(Puzzles, LenPuzzles),
     length(Columns, LenColumns),
     Puzzles=[_|TailPuzzles],
-    LenPuzzles #= LenColumns,
+    LenPuzzles#=LenColumns,
     maplist(same_length(Puzzles), Puzzles),
     headings(TailPuzzles, Solutions),
     diagonales(Solutions, Diagonales),
     Diagonales ins 1..9,
     all_same(Diagonales),
     Columns=[_|TailColumns],
-    append(TailPuzzles,TailColumns,AllSituations),
+    append(TailPuzzles, TailColumns, AllSituations),
     all_valid(AllSituations),
     handle_puzzles(AllSituations),
-    maplist(label,Puzzles).
+    maplist(label, Puzzles).
 
 /* 
 headings/2,
@@ -133,9 +133,8 @@ sum/3 is from the library clpfd
 */
 handle_puzzles([]).
 handle_puzzles([[Head|Solutions]|Others]) :-
-    (
-        sum(Solutions,#=,Head);
-        product(Solutions,Head)
+    (   sum(Solutions, #=, Head)
+    ;   product(Solutions, Head)
     ),
     handle_puzzles(Others).
 
@@ -148,8 +147,9 @@ and check if the product is equal to the second element.
 The first element is the list which can mean a row or a column, 
 the second one is a number means the heading or the product.
 */
-product([],1):-!.
-product([Head|Tail],A):-
-    product(Tail,B),
-    A #= Head * B.
+product([], 1) :-
+    !.
+product([Head|Tail], A) :-
+    product(Tail, B),
+    A#=Head*B.
 
