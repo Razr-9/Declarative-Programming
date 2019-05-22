@@ -68,8 +68,37 @@ The first element is a list of lists means Puzzles without the
 first row, and the second one is a list means Solutions part.
 */
 headings([], []).
-headings([[_|T]|Tail], [T|Tss]) :-
-    headings(Tail, Tss).
+headings([[_|Solution]|Tail], [Solution|OtherSolutions]) :-
+    headings(Tail, OtherSolutions).
+
+/* 
+diagonales/2,
+
+A function to find the diagonales of a matrix.  
+
+The first element means the matrix and the second one means 
+a list of diagonales.
+*/
+diagonales([], []).
+diagonales([[Diagonale|_]|MatrixTail], [Diagonale|OtherDiagonales]) :-
+    maplist(list_tail, MatrixTail, MT),
+    diagonales(MT, OtherDiagonales).
+
+% get the tail of a list 
+list_tail([_|Tail], Tail).
+
+/* 
+all_same/1,
+
+A function to make sure all diagonales are same. 
+
+The element will be a list of numbers from diagonales/2
+*/
+all_same([_]).
+all_same([X1, X2|Xs]) :-
+    (   X1=X2
+    ->  all_same([X2|Xs])
+    ).
 
 /* 
 all_valid/1,
@@ -94,14 +123,15 @@ all_valid([H|T]) :-
 handle_puzzles/1,
 
 A function to solve the puzzles with checking if the sum or 
-product of a column or a row is equal to the heading. 
+product of a column or a row is equal to the heading, according 
+to the rules. 
 
 The element is a list of rows and columns, traversing the list 
 with recursions.
 */
 handle_puzzles([]).
-handle_puzzles([Situaion|Others]) :-
-    Situaion = [Head|Solutions],
+handle_puzzles([Situation|Others]) :-
+    Situation = [Head|Solutions],
     (
         sum(Solutions,#=,Head);
         product(Solutions,Head)
@@ -109,44 +139,16 @@ handle_puzzles([Situaion|Others]) :-
     handle_puzzles(Others).
 
 /* 
-all_same/1,
-
-A function to make sure all diagonales are same. 
-
-The element will be a list of numbers from diagonales/2
-*/
-all_same([_]).
-all_same([X1, X2|Xs]) :-
-    (   X1=X2
-    ->  all_same([X2|Xs])
-    ).
-
-/* 
-diagonales/2,
-
-A function to find the diagonales of a matrix.  
-
-The first element means the matrix and the second one means 
-a list of diagonales.
-*/
-diagonales([], []).
-diagonales([[E|_]|Ess], [E|Ds]) :-
-    maplist(list_tail, Ess, Ess0),
-    diagonales(Ess0, Ds).
-
-% get the tail of a list 
-list_tail([_|Tail], Tail).
-
-/* 
 product/2, 
 
-The function to calculate the product with all elements of a list.
+The function to calculate the product with all elements of a list 
+and check if the product is equal to the second element.
 
 The first element is the list which can mean a row or a column, 
-the second one is a number means the product.
+the second one is a number means the heading or the product.
 */
 product([],1):-!.
-product([Head|Tail],X):-
-    product(Tail,Y),
-    X #= Head * Y.
+product([Head|Tail],A):-
+    product(Tail,B),
+    A #= Head * B.
 
