@@ -19,7 +19,7 @@ if the matrix is valid, then handle the diagonales, check if the
 solutions conform to the rules and assign them.
 */
 
-% for using function transpose/2
+% for using function transpose/2 and sum/3
 :- use_module(library(clpfd)).
 
 /* 
@@ -111,6 +111,8 @@ solutions.
 
 Including check if it is a single number in 1 to 9 and if they 
 are all distinct or not. 
+
+all_distinct/1 is from library clpfd
 */
 all_valid([]).
 all_valid([H|T]) :-
@@ -128,6 +130,8 @@ to the rules.
 
 The element is a list of rows and columns, traversing the list 
 with recursions.
+
+sum/3 is from the library clpfd
 */
 handle_puzzles([]).
 handle_puzzles([Situation|Others]) :-
