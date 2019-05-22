@@ -19,7 +19,7 @@ if the matrix is valid, then handle the diagonales, check if the
 solutions conform to the rules and assign them.
 */
 
-% for using function transpose/2, sum/3 and #=/2
+% for using function transpose/2, sum/3， #=/2 and label/1
 :- use_module(library(clpfd)).
 
 /* 
@@ -38,9 +38,9 @@ the diagonales then make sure they are all same.
 Finally, take all rows and columns to be solved together 
 and check them with the rules, including check if they are  
 valid and their sums or products are equal to the headings 
-and assign the values to each elements in Puzzles.
+and assign the values to each elements in Puzzles with label/1.
 
-transpose/2 and #=/2 are from library clpfd
+transpose/2, #=/2 and label/1 are from library clpfd
 */
 puzzle_solution(Puzzles) :-
     transpose(Puzzles, Columns),
